@@ -47,9 +47,8 @@ jobs:
     - name: 克隆源码
       run: |
         git clone --depth 1 $REPO_URL -b $REPO_BRANCH openwrt
+        git clone --depth 1 https://github.com/vernesong/OpenClash.git OpenClash
         cd openwrt/package
-        git clone https://github.com/jerrykuku/luci-theme-argon.git
-        git clone https://github.com/sirpdboy/luci-app-eqosplus
 
     - name: 配置缓存目录
       run: |
@@ -62,6 +61,7 @@ jobs:
       working-directory: ./openwrt
       run: |
         ./scripts/feeds update -a
+        cp -r ../OpenClash/luci-app-openclash feeds/luci/applications/
         ./scripts/feeds install -a
 
     - name: 自定义配置
@@ -69,8 +69,6 @@ jobs:
         chmod +x ./op-customize.sh && ./op-customize.sh
         [[ -d "files" ]] && cp -r files openwrt/files
         cp -fv "${CONFIG_FILE}" openwrt/.config
-        rm -f openwrt/feeds/luci/libs/rpcd-mod-luci/src/luci.c
-        cp -v patches/luci.c openwrt/feeds/luci/libs/rpcd-mod-luci/src/luci.c
         cd openwrt && make defconfig
 
     - name: 下载软件包
