@@ -47,8 +47,8 @@ jobs:
     - name: 克隆源码
       run: |
         git clone --depth 1 $REPO_URL -b $REPO_BRANCH openwrt
-        git clone --depth 1 https://github.com/vernesong/OpenClash.git OpenClash
-        cd openwrt/package
+        cd openwrt
+        echo "src-git clash https://github.com/vernesong/OpenClash.git" >> feeds.conf.default
 
     - name: 配置缓存目录
       run: |
@@ -61,7 +61,6 @@ jobs:
       working-directory: ./openwrt
       run: |
         ./scripts/feeds update -a
-        cp -r ../OpenClash/luci-app-openclash feeds/luci/applications/
         ./scripts/feeds install -a
 
     - name: 自定义配置
